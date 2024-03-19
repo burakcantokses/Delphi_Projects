@@ -12,7 +12,6 @@ type
     DataSource1: TDataSource;
     ADOQuery1: TADOQuery;
     startButton: TButton;
-    ADOConnection1: TADOConnection;
     procedure startButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -63,7 +62,7 @@ end;
 procedure TForm1.startButtonClick(Sender: TObject);
 var
   questionSize, biggestNumber : integer;
-begin
+begin"
   questionSize:= StrToInt(InputBox('Sayý Girin', 'Kaç sayý girilsin?', '5'));
   biggestNumber:=setNumberAndGetBiggestNumber(questionSize);
   saveData(biggestNumber, ADOQuery1);

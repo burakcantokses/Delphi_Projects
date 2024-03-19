@@ -44,8 +44,4 @@ object Form1: TForm1
     Left = 192
     Top = 168
   end
-  object ADOConnection1: TADOConnection
-    Left = 224
-    Top = 168
-  end
 end

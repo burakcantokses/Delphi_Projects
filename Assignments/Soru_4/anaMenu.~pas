@@ -29,13 +29,25 @@ implementation
 
 {$R *.dfm}
 
+procedure refreshData(query : TADOQuery);
+begin
+  query.SQL.Clear;
+  query.SQL.Text:= sql;
+  query.Open;
+end;
+
 procedure saveData(biggestNumber : integer; query : TADOQuery);
 begin
   query.SQL.Clear;
-
+  query.SQL.Add('INSERT INTO sayilar (sayi)');
+  query.SQL.Add('VALUES(:number)');
+  query.Parameters.ParamByName('number').Value:=biggestNumber;
+  query.ExecSQL;
+  query.Close;
+  refreshData(query);
 end;
 
-function setNumbersAndGetBiggestNumber(size : integer): integer;
+function setNumberAndGetBiggestNumber(size : integer): integer;
 var
   currentNumber, biggestNumber, i : integer;
 begin
@@ -50,18 +62,20 @@ end;
 
 procedure TForm1.startButtonClick(Sender: TObject);
 var
-  questionSize : integer;
+  questionSize, biggestNumber : integer;
 begin
   questionSize:= StrToInt(InputBox('Sayý Girin', 'Kaç sayý girilsin?', '5'));
-
+  biggestNumber:=setNumberAndGetBiggestNumber(questionSize);
+  saveData(biggestNumber, ADOQuery1);
+  ShowMessage('En büyük sayý ' + IntToStr(biggestNumber) + ' veri tabanýna baþarýlý bir þekilde kayedildi.');
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  ADOConnection1.ConnectionString := 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=bilgiler.mdb;Persist Security Info=False';
+  ADOQuery1.ConnectionString := 'Provider=Microsoft.Jet.OLEDB.4.0;Data Source=bilgiler.mdb;Persist Security Info=False';
   sql:= 'SELECT * FROM sayilar';
   ADOQuery1.SQL.Text := sql;
-  ADOConnection1.Connected := True;
+  ADOQuery1.Active:=true;
   ADOQuery1.Open;
 
   DataSource1.DataSet:= ADOQuery1;
